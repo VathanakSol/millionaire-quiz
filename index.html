@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Be a Millionaire — The Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f1a;
+    --bg2:#111827;
+    --card:#141c2e;
+    --card2:#1a2438;
+    --gold:#d4af37;
+    --gold-light:#f3d97a;
+    --gold-dim:rgba(212,175,55,.35);
+    --text:#eef1f7;
+    --muted:#9aa5bd;
+    --good:#3ecf8e;
+    --bad:#ff6b6b;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(212,175,55,.12), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgba(62,207,142,.08), transparent 60%),
+      linear-gradient(160deg,var(--bg) 0%, var(--bg2) 100%);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+  }
+  .app{width:100%;max-width:640px}
+
+  /* ---------- Top bar ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.3px}
+  .brand .coin{
+    width:34px;height:34px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, #ffe9a8, var(--gold) 55%, #8a6d1f);
+    display:grid;place-items:center;color:#3a2c07;font-weight:800;font-size:18px;
+    box-shadow:0 4px 14px rgba(212,175,55,.4), inset 0 0 0 2px rgba(255,255,255,.25);
+  }
+  .brand small{display:block;font-weight:500;color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+  .score-pill{
+    background:var(--card);border:1px solid var(--gold-dim);color:var(--gold-light);
+    padding:8px 14px;border-radius:999px;font-weight:700;font-size:14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .score-pill span{color:var(--muted);font-weight:500;font-size:12px}
+
+  /* ---------- Card / screens ---------- */
+  .screen{
+    background:linear-gradient(180deg,var(--card) 0%, var(--card2) 100%);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--radius);
+    padding:34px 30px;
+    box-shadow:0 30px 60px rgba(0,0,0,.45);
+    position:relative;overflow:hidden;
+  }
+  .screen::before{
+    content:"";position:absolute;inset:0 0 auto 0;height:4px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  }
+  .hidden{display:none!important}
+
+  /* ---------- Intro ---------- */
+  .intro{text-align:center}
+  .intro .emblem{
+    width:84px;height:84px;margin:6px auto 18px;border-radius:24px;
+    background:radial-gradient(circle at 30% 25%, #ffe9a8, var(--gold) 55%, #7a5f18);
+    display:grid;place-items:center;font-size:42px;
+    box-shadow:0 10px 30px rgba(212,175,55,.45), inset 0 0 0 3px rgba(255,255,255,.2);
+    animation:float 3s ease-in-out infinite;
+  }
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .intro h1{
+    font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(30px,6vw,44px);
+    line-height:1.1;background:linear-gradient(180deg,#fff,var(--gold-light));
+    -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px;
+  }
+  .intro p{color:var(--muted);font-size:16px;line-height:1.6;max-width:440px;margin:0 auto 26px}
+  .intro .meta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+  .chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:8px 14px;border-radius:999px;font-size:13px;color:var(--muted)}
+  .chip b{color:var(--text)}
+
+  .btn{
+    appearance:none;border:none;cursor:pointer;font-family:inherit;
+    background:linear-gradient(180deg,var(--gold-light),var(--gold));
+    color:#2c2105;font-weight:700;font-size:16px;
+    padding:15px 34px;border-radius:14px;width:100%;
+    box-shadow:0 10px 24px rgba(212,175,55,.35);
+    transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+  }
+  .btn:hover{transform:translateY(-2px);filter:brightness(1.05);box-shadow:0 14px 30px rgba(212,175,55,.45)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.15);box-shadow:none;width:auto;padding:12px 22px}
+  .btn.ghost:hover{background:rgba(255,255,255,.06);filter:none}
+
+  /* ---------- Progress ---------- */
+  .progress-wrap{margin-bottom:22px}
+  .progress-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  .q-count{font-size:13px;color:var(--muted);font-weight:600;letter-spacing:.5px}
+  .q-count b{color:var(--gold-light)}
+  .progress{height:8px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+  .progress .bar{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+  /* ---------- Question ---------- */
+  .q-cat{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);background:rgba(212,175,55,.1);border:1px solid var(--gold-dim);padding:5px 12px;border-radius:999px;margin-bottom:16px}
+  .q-text{font-family:'Playfair Display',serif;font-size:clamp(21px,4vw,27px);font-weight:600;line-height:1.35;margin-bottom:24px}
+  .options{display:flex;flex-direction:column;gap:12px}
+  .opt{
+    text-align:left;appearance:none;cursor:pointer;font-family:inherit;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);
+    color:var(--text);font-size:15.5px;font-weight:500;line-height:1.45;
+    padding:15px 16px;border-radius:14px;display:flex;align-items:center;gap:14px;
+    transition:all .15s ease;
+  }
+  .opt .key{
+    flex:0 0 30px;height:30px;border-radius:9px;display:grid;place-items:center;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+    font-weight:700;font-size:14px;color:var(--muted);transition:all .15s ease;
+  }
+  .opt:hover:not(:disabled){border-color:var(--gold-dim);background:rgba(212,175,55,.07);transform:translateX(4px)}
+  .opt:hover:not(:disabled) .key{background:var(--gold);color:#2c2105;border-color:var(--gold)}
+  .opt:disabled{cursor:default;opacity:.6}
+  .opt.correct{border-color:var(--good);background:rgba(62,207,142,.12);opacity:1}
+  .opt.correct .key{background:var(--good);color:#06281a;border-color:var(--good)}
+  .opt.wrong{border-color:var(--bad);background:rgba(255,107,107,.12);opacity:1}
+  .opt.wrong .key{background:var(--bad);color:#2b0707;border-color:var(--bad)}
+
+  .explain{
+    margin-top:18px;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.55;
+    background:rgba(255,255,255,.04);border-left:3px solid var(--gold);color:var(--muted);
+    opacity:0;transform:translateY(6px);transition:all .3s ease;
+  }
+  .explain.show{opacity:1;transform:translateY(0)}
+  .explain b{color:var(--text)}
+
+  .next-row{display:flex;justify-content:flex-end;margin-top:20px}
+  .next-btn{
+    appearance:none;border:none;cursor:pointer;font-family:inherit;
+    background:linear-gradient(180deg,var(--gold-light),var(--gold));color:#2c2105;
+    font-weight:700;font-size:15px;padding:13px 26px;border-radius:12px;
+    box-shadow:0 8px 20px rgba(212,175,55,.3);transition:transform .12s ease,filter .12s ease;
+    opacity:.4;pointer-events:none;
+  }
+  .next-btn.ready{opacity:1;pointer-events:auto}
+  .next-btn.ready:hover{transform:translateY(-2px);filter:brightness(1.05)}
+
+  /* ---------- Result ---------- */
+  .result{text-align:center}
+  .result .medal{font-size:64px;margin:8px 0 6px;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+  @keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+  .result h2{font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,36px);font-weight:800;margin-bottom:8px}
+  .result .sub{color:var(--muted);font-size:16px;line-height:1.6;max-width:420px;margin:0 auto 26px}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+  .stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 8px}
+  .stat .num{font-size:26px;font-weight:800;color:var(--gold-light)}
+  .stat .lbl{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.5px;text-transform:uppercase}
+  .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  footer{ text-align:center;color:var(--muted);font-size:12px;margin-top:18px;opacity:.7}
+  @media(max-width:480px){
+    .screen{padding:26px 20px}
+    .stat-grid{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="coin">$</div>
+      <div>MILLIONAIRE<small>The Money Mindset Quiz</small></div>
+    </div>
+    <div class="score-pill"><span>Net worth</span><b id="netWorth">$0</b></div>
+  </div>
+
+  <!-- INTRO -->
+  <section class="screen intro" id="introScreen">
+    <div class="emblem">💰</div>
+    <h1>How to Be a<br>Millionaire</h1>
+    <p>Answer these real-world money questions like the wealthy do. Track your mindset, dodge the traps, and see how close you are to seven figures.</p>
+    <div class="meta">
+      <div class="chip"><b>8</b> questions</div>
+      <div class="chip"><b>~3</b> minutes</div>
+      <div class="chip"><b>Instant</b> result</div>
+    </div>
+    <button class="btn" id="startBtn">Start the Quiz →</button>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="screen hidden" id="quizScreen">
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <div class="q-count">Question <b id="qNow">1</b> of <span id="qTotal">8</span></div>
+        <div class="q-count" id="streakLbl"></div>
+      </div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+    </div>
+    <span class="q-cat" id="qCat"></span>
+    <h2 class="q-text" id="qText"></h2>
+    <div class="options" id="options"></div>
+    <div class="explain" id="explain"></div>
+    <div class="next-row"><button class="next-btn" id="nextBtn">Next →</button></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen result hidden" id="resultScreen">
+    <div class="medal" id="medal">🏆</div>
+    <h2 id="resTitle"></h2>
+    <p class="sub" id="resSub"></p>
+    <div class="stat-grid">
+      <div class="stat"><div class="num" id="stScore">0/8</div><div class="lbl">Correct</div></div>
+      <div class="stat"><div class="num" id="stPct">0%</div><div class="lbl">Mindset</div></div>
+      <div class="stat"><div class="num" id="stWorth">$0</div><div class="lbl">Est. Net Worth</div></div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="retryBtn">↺ Try Again</button>
+    </div>
+  </section>
+
+  <footer>For entertainment &amp; education — not financial advice.</footer>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
